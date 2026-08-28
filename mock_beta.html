@@ -1,0 +1,2700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Foundation School · Admin &amp; Instructor</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js">
+    </script>
+
+    <!-- FullCalendar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales/pt-br.js">
+    </script>
+
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+
+    <style>
+        /* ================================================================
+           COLOR PALETTE (Navi, Gold, Teal, Rust, Cream)
+           ================================================================ */
+        :root {
+            --navi: #1a2a4a;
+            --navi-light: #2a406a;
+            --navi-dark: #0f1a2e;
+            --gold: #d4a747;
+            --gold-light: #e8c77a;
+            --gold-dark: #b8922e;
+            --teal: #2d9b8e;
+            --teal-light: #4db8aa;
+            --teal-dark: #1f7a6f;
+            --rust: #b85c38;
+            --rust-light: #d47a54;
+            --rust-dark: #9a4a2a;
+            --cream: #f5f0e1;
+            --cream-dark: #e8dfc8;
+            --cream-light: #fcf9f0;
+            --sidebar-width: 280px;
+            --header-height: 72px;
+            --radius: 14px;
+            --shadow-sm: 0 1px 4px rgba(26, 42, 74, 0.06);
+            --shadow-md: 0 4px 20px rgba(26, 42, 74, 0.08);
+            --shadow-lg: 0 8px 40px rgba(26, 42, 74, 0.12);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--cream);
+            color: var(--navi);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--cream-dark);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold-dark);
+        }
+
+        /* ---------- Sidebar ---------- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, var(--navi-dark) 0%, var(--navi) 100%);
+            color: #fff;
+            z-index: 1000;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: transform var(--transition);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(212, 167, 71, 0.15);
+        }
+
+        .sidebar-brand {
+            padding: 22px 24px 18px 24px;
+            border-bottom: 1px solid rgba(212, 167, 71, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand .brand-icon {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--navi-dark);
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand .brand-text {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+        .sidebar-brand .brand-text small {
+            display: block;
+            font-weight: 400;
+            font-size: 11px;
+            opacity: 0.5;
+            letter-spacing: 0.4px;
+            color: var(--gold-light);
+        }
+
+        .sidebar-nav {
+            padding: 18px 14px 0 14px;
+            flex: 1;
+        }
+
+        .sidebar-nav .nav-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: rgba(255, 255, 255, 0.25);
+            padding: 0 14px 12px 14px;
+            font-weight: 700;
+        }
+
+        .sidebar-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 11px 16px;
+            border-radius: var(--radius);
+            color: rgba(255, 255, 255, 0.55);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--transition);
+            cursor: pointer;
+            margin-bottom: 2px;
+            position: relative;
+        }
+
+        .sidebar-nav .nav-item i {
+            width: 20px;
+            font-size: 15px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-nav .nav-item:hover {
+            background: rgba(212, 167, 71, 0.10);
+            color: #fff;
+        }
+
+        .sidebar-nav .nav-item.active {
+            background: rgba(212, 167, 71, 0.18);
+            color: #fff;
+            box-shadow: inset 3px 0 0 var(--gold);
+        }
+
+        .sidebar-nav .nav-item .badge {
+            margin-left: auto;
+            background: var(--gold);
+            color: var(--navi-dark);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 10px;
+            border-radius: 20px;
+            line-height: 20px;
+        }
+
+        .sidebar-nav .nav-item .badge-rust {
+            background: var(--rust);
+            color: #fff;
+        }
+        .sidebar-nav .nav-item .badge-teal {
+            background: var(--teal);
+            color: #fff;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px 20px 20px;
+            border-top: 1px solid rgba(212, 167, 71, 0.10);
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer .user-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 8px;
+            border-radius: var(--radius);
+            transition: background var(--transition);
+            cursor: pointer;
+        }
+
+        .sidebar-footer .user-card:hover {
+            background: rgba(212, 167, 71, 0.08);
+        }
+
+        .sidebar-footer .user-card .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--rust));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer .user-card .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .sidebar-footer .user-card .user-info .name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-footer .user-card .user-info .role {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* ---------- Main ---------- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            height: var(--header-height);
+            background: rgba(255, 255, 255, 0.80);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(26, 42, 74, 0.06);
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar .left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .topbar .left .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: var(--navi);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .topbar .left .page-title h1 {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: var(--navi);
+        }
+        .topbar .left .page-title p {
+            font-size: 13px;
+            color: rgba(26, 42, 74, 0.5);
+            font-weight: 400;
+            margin-top: -2px;
+        }
+
+        .topbar .right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .topbar .right .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(26, 42, 74, 0.04);
+            color: var(--navi);
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+        }
+
+        .topbar .right .icon-btn:hover {
+            background: rgba(212, 167, 71, 0.15);
+        }
+
+        .topbar .right .icon-btn .dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--rust);
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+
+        .topbar .right .role-badge {
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(212, 167, 71, 0.12);
+            color: var(--gold-dark);
+            border: 1px solid rgba(212, 167, 71, 0.20);
+        }
+
+        .page-content {
+            padding: 28px 32px 40px 32px;
+            flex: 1;
+        }
+
+        /* ---------- Cards ---------- */
+        .stat-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(26, 42, 74, 0.05);
+            transition: all var(--transition);
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 14px;
+        }
+        .stat-card .stat-icon.navi {
+            background: rgba(26, 42, 74, 0.08);
+            color: var(--navi);
+        }
+        .stat-card .stat-icon.gold {
+            background: rgba(212, 167, 71, 0.12);
+            color: var(--gold-dark);
+        }
+        .stat-card .stat-icon.teal {
+            background: rgba(45, 155, 142, 0.10);
+            color: var(--teal);
+        }
+        .stat-card .stat-icon.rust {
+            background: rgba(184, 92, 56, 0.10);
+            color: var(--rust);
+        }
+
+        .stat-card .stat-number {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--navi);
+            line-height: 1.2;
+        }
+        .stat-card .stat-label {
+            font-size: 14px;
+            color: rgba(26, 42, 74, 0.5);
+            font-weight: 500;
+        }
+        .stat-card .stat-change {
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+        .stat-card .stat-change.up {
+            color: var(--teal);
+        }
+        .stat-card .stat-change.down {
+            color: var(--rust);
+        }
+
+        /* ---------- Tables ---------- */
+        .table-wrapper {
+            background: #fff;
+            border-radius: var(--radius);
+            border: 1px solid rgba(26, 42, 74, 0.05);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .table-wrapper .table-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(26, 42, 74, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: rgba(245, 240, 225, 0.30);
+        }
+        .table-wrapper .table-header h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navi);
+        }
+        .table-wrapper .table-header .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .table-wrapper table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .table-wrapper table thead {
+            background: rgba(245, 240, 225, 0.20);
+            border-bottom: 1px solid rgba(26, 42, 74, 0.05);
+        }
+        .table-wrapper table thead th {
+            padding: 14px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(26, 42, 74, 0.5);
+            white-space: nowrap;
+        }
+        .table-wrapper table tbody td {
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(26, 42, 74, 0.04);
+            color: var(--navi);
+            vertical-align: middle;
+        }
+        .table-wrapper table tbody tr:hover {
+            background: rgba(245, 240, 225, 0.20);
+        }
+        .table-wrapper table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ---------- Badges ---------- */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 22px;
+        }
+        .status-badge.active {
+            background: rgba(45, 155, 142, 0.10);
+            color: var(--teal-dark);
+        }
+        .status-badge.active::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+        .status-badge.inactive {
+            background: rgba(184, 92, 56, 0.10);
+            color: var(--rust);
+        }
+        .status-badge.inactive::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--rust);
+        }
+        .status-badge.pending {
+            background: rgba(212, 167, 71, 0.12);
+            color: var(--gold-dark);
+        }
+        .status-badge.pending::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+        .status-badge.completed {
+            background: rgba(45, 155, 142, 0.10);
+            color: var(--teal-dark);
+        }
+        .status-badge.completed::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+        .status-badge.approved {
+            background: rgba(45, 155, 142, 0.10);
+            color: var(--teal-dark);
+        }
+        .status-badge.approved::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+        .status-badge.rejected {
+            background: rgba(184, 92, 56, 0.10);
+            color: var(--rust);
+        }
+        .status-badge.rejected::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--rust);
+        }
+        .status-badge.confirmed {
+            background: rgba(45, 155, 142, 0.10);
+            color: var(--teal-dark);
+        }
+        .status-badge.confirmed::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+        .status-badge.waiting-leader {
+            background: rgba(212, 167, 71, 0.12);
+            color: var(--gold-dark);
+        }
+        .status-badge.waiting-leader::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+        .status-badge.waiting-admin {
+            background: rgba(26, 42, 74, 0.08);
+            color: var(--navi);
+        }
+        .status-badge.waiting-admin::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--navi);
+        }
+        .status-badge.ready {
+            background: rgba(45, 155, 142, 0.10);
+            color: var(--teal-dark);
+        }
+        .status-badge.ready::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+        .status-badge.overdue {
+            background: rgba(184, 92, 56, 0.10);
+            color: var(--rust);
+        }
+        .status-badge.overdue::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--rust);
+        }
+
+        /* ---------- Buttons ---------- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 22px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            text-decoration: none;
+            line-height: 1.4;
+        }
+        .btn-primary {
+            background: var(--navi);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--navi-light);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        .btn-gold {
+            background: var(--gold);
+            color: var(--navi-dark);
+        }
+        .btn-gold:hover {
+            background: var(--gold-dark);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        .btn-teal {
+            background: var(--teal);
+            color: #fff;
+        }
+        .btn-teal:hover {
+            background: var(--teal-dark);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        .btn-rust {
+            background: var(--rust);
+            color: #fff;
+        }
+        .btn-rust:hover {
+            background: var(--rust-dark);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--navi);
+            border: 1.5px solid rgba(26, 42, 74, 0.12);
+        }
+        .btn-outline:hover {
+            background: rgba(26, 42, 74, 0.04);
+            border-color: var(--navi);
+        }
+        .btn-outline-gold {
+            background: transparent;
+            color: var(--gold-dark);
+            border: 1.5px solid rgba(212, 167, 71, 0.25);
+        }
+        .btn-outline-gold:hover {
+            background: rgba(212, 167, 71, 0.08);
+            border-color: var(--gold);
+        }
+        .btn-sm {
+            padding: 5px 16px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+        .btn-xs {
+            padding: 3px 12px;
+            font-size: 11px;
+            border-radius: 6px;
+        }
+        .btn-danger {
+            background: var(--rust);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: var(--rust-dark);
+        }
+        .btn-success {
+            background: var(--teal);
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: var(--teal-dark);
+        }
+
+        /* ---------- Forms ---------- */
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--navi);
+            margin-bottom: 5px;
+        }
+        .form-group .form-control {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1.5px solid rgba(26, 42, 74, 0.08);
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-family: inherit;
+            transition: all var(--transition);
+            background: #fff;
+            color: var(--navi);
+        }
+        .form-group .form-control:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 167, 71, 0.12);
+        }
+        .form-group .form-control::placeholder {
+            color: rgba(26, 42, 74, 0.3);
+        }
+        .form-group textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-group select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a2a4a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ---------- Grid ---------- */
+        .grid-cols-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .grid-cols-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .grid-cols-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* ---------- Filter bar ---------- */
+        .filter-bar {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 16px 24px;
+            border: 1px solid rgba(26, 42, 74, 0.05);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+        }
+        .filter-bar .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-bar .filter-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(26, 42, 74, 0.6);
+        }
+        .filter-bar .filter-group select,
+        .filter-bar .filter-group input {
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: 1.5px solid rgba(26, 42, 74, 0.06);
+            font-size: 13px;
+            font-family: inherit;
+            background: #fff;
+            color: var(--navi);
+            transition: all var(--transition);
+        }
+        .filter-bar .filter-group select:focus,
+        .filter-bar .filter-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 167, 71, 0.10);
+        }
+
+        /* ---------- Approval timeline ---------- */
+        .approval-timeline {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+        }
+        .approval-timeline .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(26, 42, 74, 0.4);
+        }
+        .approval-timeline .step .circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            background: rgba(26, 42, 74, 0.06);
+            color: rgba(26, 42, 74, 0.3);
+        }
+        .approval-timeline .step.done .circle {
+            background: var(--teal);
+            color: #fff;
+        }
+        .approval-timeline .step.active .circle {
+            background: var(--gold);
+            color: #fff;
+        }
+        .approval-timeline .step .line {
+            width: 32px;
+            height: 2px;
+            background: rgba(26, 42, 74, 0.08);
+        }
+        .approval-timeline .step.done .line {
+            background: var(--teal);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 1200px) {
+            .grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .grid-cols-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 992px) {
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            .grid-cols-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .topbar .left .hamburger {
+                display: block;
+            }
+            .topbar {
+                padding: 0 16px;
+            }
+            .page-content {
+                padding: 16px;
+            }
+            .grid-cols-4 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+            .topbar .left .page-title h1 {
+                font-size: 17px;
+            }
+            .topbar .left .page-title p {
+                font-size: 12px;
+            }
+            .table-wrapper .table-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .table-wrapper .table-header .actions {
+                justify-content: stretch;
+            }
+            .stat-card .stat-number {
+                font-size: 22px;
+            }
+        }
+        @media (max-width: 480px) {
+            .grid-cols-4 {
+                grid-template-columns: 1fr;
+            }
+            .grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+            .topbar .right .role-badge {
+                display: none;
+            }
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 42, 74, 0.30);
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .view-content {
+            animation: fadeIn 0.35s ease forwards;
+        }
+
+        .text-truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+        .gap-2 {
+            gap: 8px;
+        }
+        .gap-3 {
+            gap: 12px;
+        }
+        .gap-4 {
+            gap: 16px;
+        }
+        .mt-2 {
+            margin-top: 8px;
+        }
+        .mt-4 {
+            margin-top: 16px;
+        }
+        .mt-6 {
+            margin-top: 24px;
+        }
+        .mb-2 {
+            margin-bottom: 8px;
+        }
+        .mb-4 {
+            margin-bottom: 16px;
+        }
+        .mb-6 {
+            margin-bottom: 24px;
+        }
+        .fw-600 {
+            font-weight: 600;
+        }
+        .text-muted {
+            color: rgba(26, 42, 74, 0.5);
+        }
+        .text-sm {
+            font-size: 13px;
+        }
+        .text-xs {
+            font-size: 12px;
+        }
+        .bg-cream {
+            background: var(--cream);
+        }
+        .border-gold {
+            border-color: var(--gold);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+            width: 100%;
+        }
+        .chart-container-sm {
+            height: 160px;
+        }
+
+        /* FullCalendar */
+        #calendar {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 20px;
+            border: 1px solid rgba(26, 42, 74, 0.05);
+            box-shadow: var(--shadow-sm);
+        }
+        .fc {
+            --fc-border-color: rgba(26, 42, 74, 0.06);
+            --fc-button-bg-color: var(--navi);
+            --fc-button-border-color: var(--navi);
+            --fc-button-hover-bg-color: var(--navi-light);
+            --fc-button-hover-border-color: var(--navi-light);
+            --fc-button-active-bg-color: var(--gold);
+            --fc-button-active-border-color: var(--gold);
+            --fc-today-bg-color: rgba(212, 167, 71, 0.06);
+        }
+        .fc .fc-toolbar-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--navi);
+        }
+        .fc .fc-daygrid-day-number {
+            color: var(--navi);
+            font-weight: 500;
+        }
+        .fc .fc-event {
+            border: none;
+            border-radius: 8px;
+            padding: 3px 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .fc-event-gold {
+            background: var(--gold);
+            color: var(--navi-dark);
+        }
+        .fc-event-teal {
+            background: var(--teal);
+            color: #fff;
+        }
+        .fc-event-rust {
+            background: var(--rust);
+            color: #fff;
+        }
+        .fc-event-navi {
+            background: var(--navi);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    SIDEBAR OVERLAY
+    ============================================================ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ============================================================
+    SIDEBAR
+    ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">EF</div>
+            <div class="brand-text">
+                Escola Fundação
+                <small>Digital · Embaixada de Cristo</small>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-label">Administração</div>
+            <div class="nav-item active" data-view="admin-dashboard">
+                <i class="fas fa-th-large"></i> Dashboard
+            </div>
+            <div class="nav-item" data-view="admin-approvals">
+                <i class="fas fa-user-check"></i> Aprovações
+                <span class="badge badge-rust">6</span>
+            </div>
+            <div class="nav-item" data-view="admin-users">
+                <i class="fas fa-users"></i> Utilizadores
+                <span class="badge">24</span>
+            </div>
+            <div class="nav-item" data-view="admin-cells">
+                <i class="fas fa-layer-group"></i> Células
+                <span class="badge">8</span>
+            </div>
+            <div class="nav-item" data-view="admin-classes">
+                <i class="fas fa-chalkboard"></i> Turmas
+                <span class="badge">6</span>
+            </div>
+            <div class="nav-item" data-view="admin-calendar">
+                <i class="fas fa-calendar-alt"></i> Agenda
+            </div>
+            <div class="nav-item" data-view="admin-reports">
+                <i class="fas fa-chart-bar"></i> Relatórios
+            </div>
+            <div class="nav-item" data-view="admin-monitoring">
+                <i class="fas fa-people-arrows"></i> Monitoria
+                <span class="badge badge-teal">3</span>
+            </div>
+
+            <div class="nav-label" style="margin-top:20px;">Educação</div>
+            <div class="nav-item" data-view="teacher-dashboard">
+                <i class="fas fa-graduation-cap"></i> Painel Instrutor
+            </div>
+            <div class="nav-item" data-view="teacher-lessons">
+                <i class="fas fa-video"></i> Aulas
+                <span class="badge">12</span>
+            </div>
+            <div class="nav-item" data-view="teacher-tests">
+                <i class="fas fa-check-circle"></i> Testes
+                <span class="badge">8</span>
+            </div>
+            <div class="nav-item" data-view="teacher-progress">
+                <i class="fas fa-chart-line"></i> Progresso
+            </div>
+            <div class="nav-item" data-view="teacher-monitoring">
+                <i class="fas fa-people-arrows"></i> Monitoria
+                <span class="badge badge-teal">3</span>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="avatar">JD</div>
+                <div class="user-info">
+                    <div class="name">João da Silva</div>
+                    <div class="role">Administrador</div>
+                </div>
+                <i class="fas fa-ellipsis-v" style="color:rgba(255,255,255,0.2); font-size:14px;"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div class="left">
+                <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="page-title">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">Visão geral da plataforma</p>
+                </div>
+            </div>
+            <div class="right">
+                <span class="role-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+                <button class="icon-btn" title="Notificações">
+                    <i class="fas fa-bell"></i>
+                    <span class="dot"></span>
+                </button>
+                <button class="icon-btn" title="Perfil">
+                    <i class="fas fa-user-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="page-content" id="pageContent">
+
+            <!-- ============================================================
+            VIEW: ADMIN DASHBOARD
+            ============================================================ -->
+            <div class="view-content" id="view-admin-dashboard">
+                <div class="grid-cols-4 mb-6">
+                    <div class="stat-card">
+                        <div class="stat-icon navi"><i class="fas fa-user-graduate"></i></div>
+                        <div class="stat-number">184</div>
+                        <div class="stat-label">Alunos Totais</div>
+                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> +12 este mês</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon teal"><i class="fas fa-user-check"></i></div>
+                        <div class="stat-number">142</div>
+                        <div class="stat-label">Alunos Ativos</div>
+                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> +8 este mês</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon gold"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <div class="stat-number">14</div>
+                        <div class="stat-label">Instrutores</div>
+                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> +2 este mês</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon rust"><i class="fas fa-school"></i></div>
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Células</div>
+                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> +1 este mês</div>
+                    </div>
+                </div>
+
+                <div class="grid-cols-2 mb-6">
+                    <div class="stat-card" style="padding:20px 24px;">
+                        <div class="flex-between mb-4">
+                            <h3 style="font-size:15px; font-weight:700;">Progresso por Célula</h3>
+                            <span class="text-xs text-muted">Últimos 30 dias</span>
+                        </div>
+                        <div class="chart-container"><canvas id="chartProgressByCell"></canvas></div>
+                    </div>
+                    <div class="stat-card" style="padding:20px 24px;">
+                        <div class="flex-between mb-4">
+                            <h3 style="font-size:15px; font-weight:700;">Distribuição de Alunos</h3>
+                            <span class="text-xs text-muted">Por status</span>
+                        </div>
+                        <div class="chart-container"><canvas id="chartStudentDistribution"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="stat-card mb-6" style="border-left:4px solid var(--gold);">
+                    <div class="flex-between">
+                        <div>
+                            <span class="text-sm text-muted">Aprovações Pendentes</span>
+                            <div style="font-size:24px; font-weight:800; color:var(--navi);">6</div>
+                        </div>
+                        <div style="display:flex; gap:12px;">
+                            <span class="status-badge waiting-leader">Aguardando Líder (4)</span>
+                            <span class="status-badge waiting-admin">Aguardando Admin (2)</span>
+                        </div>
+                        <button class="btn btn-gold btn-sm" onclick="switchView('admin-approvals')">
+                            <i class="fas fa-arrow-right"></i> Revisar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h3><i class="fas fa-clock" style="margin-right:10px; color:var(--gold);"></i>Atividade Recente</h3>
+                        <div class="actions">
+                            <button class="btn btn-outline btn-sm"><i class="fas fa-filter"></i> Filtrar</button>
+                            <button class="btn btn-gold btn-sm"><i class="fas fa-file-export"></i> Exportar</button>
+                        </div>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Utilizador</th>
+                                    <th>Ação</th>
+                                    <th>Recurso</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Maria Oliveira</strong><br /><span class="text-xs text-muted">Aluno</span></td>
+                                    <td>Concluiu aula</td>
+                                    <td>Fundamentos da Fé - Aula 4</td>
+                                    <td>Hoje, 14:32</td>
+                                    <td><span class="status-badge completed">Concluído</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Carlos Mendes</strong><br /><span class="text-xs text-muted">Instrutor</span></td>
+                                    <td>Criou teste</td>
+                                    <td>Teste - Módulo 2</td>
+                                    <td>Hoje, 11:15</td>
+                                    <td><span class="status-badge active">Publicado</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ana Souza</strong><br /><span class="text-xs text-muted">Aluno</span></td>
+                                    <td>Inscreveu-se</td>
+                                    <td>Turma A - Fundamentos</td>
+                                    <td>Ontem, 16:40</td>
+                                    <td><span class="status-badge pending">Pendente</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            VIEW: ADMIN APPROVALS (list)
+            ============================================================ -->
+            <div class="view-content" id="view-admin-approvals" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-user-check" style="margin-right:10px; color:var(--gold);"></i>Aprovações de Conta
+                        </h3>
+                        <p class="text-sm text-muted">Gerencie o fluxo de aprovação de novos utilizadores</p>
+                    </div>
+                </div>
+                <div class="stat-card mb-6" style="padding:20px 24px;">
+                    <div class="approval-timeline">
+                        <div class="step done"><span class="circle"><i class="fas fa-check"></i></span><span>Registo</span></div>
+                        <div class="step done"><span class="line"></span></div>
+                        <div class="step active"><span class="circle"><i class="fas fa-user-tie"></i></span><span>Líder confirma</span></div>
+                        <div class="step"><span class="line"></span></div>
+                        <div class="step"><span class="circle"><i class="fas fa-user-shield"></i></span><span>Admin aprova</span></div>
+                        <div class="step"><span class="line"></span></div>
+                        <div class="step"><span class="circle"><i class="fas fa-check-double"></i></span><span>Conta Ativa</span></div>
+                    </div>
+                </div>
+                <div class="filter-bar mb-4">
+                    <div class="filter-group">
+                        <label><i class="fas fa-filter"></i> Status:</label>
+                        <select>
+                            <option>Todos</option>
+                            <option selected>Pending Leader</option>
+                            <option>Pending Admin</option>
+                            <option>Approved</option>
+                            <option>Rejected</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-gold btn-sm"><i class="fas fa-sync"></i> Atualizar</button>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h3>Solicitações de Aprovação</h3>
+                        <div class="actions"><button class="btn btn-outline btn-sm"><i class="fas fa-export"></i> Exportar</button></div>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Utilizador</th><th>Email</th><th>Célula</th><th>Líder</th><th>Status</th><th>Data</th><th style="text-align:center;">Ações</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Ana Souza</strong></td>
+                                    <td>ana.souza@email.com</td>
+                                    <td>Fé &amp; Vida</td>
+                                    <td>Pastor André</td>
+                                    <td><span class="status-badge waiting-leader">Aguardando Líder</span></td>
+                                    <td>10/04/2026</td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-outline-gold btn-xs" onclick="switchView('leader-confirm')"><i class="fas fa-check"></i> Confirmar</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mariana Silva</strong></td>
+                                    <td>mariana.silva@email.com</td>
+                                    <td>Nova Aliança</td>
+                                    <td>Diogo Santos</td>
+                                    <td><span class="status-badge waiting-admin">Aguardando Admin</span></td>
+                                    <td>08/04/2026</td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-success btn-xs" onclick="switchView('admin-approve')"><i class="fas fa-check"></i> Aprovar</button>
+                                        <button class="btn btn-danger btn-xs" onclick="switchView('reject')"><i class="fas fa-times"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            VIEW: ADMIN USERS (list)
+            ============================================================ -->
+            <div class="view-content" id="view-admin-users" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-users" style="margin-right:10px; color:var(--gold);"></i>Utilizadores
+                        </h3>
+                        <p class="text-sm text-muted">Gerencie todos os utilizadores da plataforma</p>
+                    </div>
+                    <button class="btn btn-gold" onclick="switchView('create-user')"><i class="fas fa-plus"></i> Novo Utilizador</button>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h3>Todos os Utilizadores</h3>
+                        <div class="actions">
+                            <button class="btn btn-outline btn-sm"><i class="fas fa-filter"></i> Filtrar</button>
+                            <button class="btn btn-outline btn-sm"><i class="fas fa-upload"></i> Importar</button>
+                        </div>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Função</th><th>Célula</th><th>Status</th><th style="text-align:center;">Ações</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>João da Silva</strong></td>
+                                    <td>joao@igreja.org</td>
+                                    <td>(11) 98765-4321</td>
+                                    <td><span class="status-badge active" style="background:rgba(26,42,74,0.08);color:var(--navi);">Admin</span></td>
+                                    <td>—</td>
+                                    <td><span class="status-badge active">Ativo</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-outline btn-xs" onclick="switchView('edit-user')"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Maria Santos</strong></td>
+                                    <td>maria@igreja.org</td>
+                                    <td>(11) 91234-5678</td>
+                                    <td><span class="status-badge active" style="background:rgba(212,167,71,0.12);color:var(--gold-dark);">Instrutor</span></td>
+                                    <td>—</td>
+                                    <td><span class="status-badge active">Ativo</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-outline btn-xs" onclick="switchView('edit-user')"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            VIEW: ADMIN CELLS (list)
+            ============================================================ -->
+            <div class="view-content" id="view-admin-cells" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-layer-group" style="margin-right:10px; color:var(--gold);"></i>Células
+                        </h3>
+                        <p class="text-sm text-muted">Organização das células da igreja</p>
+                    </div>
+                    <button class="btn btn-gold" onclick="switchView('create-cell')"><i class="fas fa-plus"></i> Nova Célula</button>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h3>Lista de Células</h3>
+                        <div class="actions"><button class="btn btn-outline btn-sm"><i class="fas fa-filter"></i> Filtrar</button></div>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Nome</th><th>Líder</th><th>Alunos</th><th>Status</th><th style="text-align:center;">Ações</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Fé &amp; Vida</strong></td>
+                                    <td>Pastor André</td>
+                                    <td>28</td>
+                                    <td><span class="status-badge active">Ativa</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-outline btn-xs" onclick="switchView('edit-cell')"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Luz do Mundo</strong></td>
+                                    <td>Irmã Marta</td>
+                                    <td>22</td>
+                                    <td><span class="status-badge active">Ativa</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-outline btn-xs" onclick="switchView('edit-cell')"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            VIEW: ADMIN CLASSES (list)
+            ============================================================ -->
+            <div class="view-content" id="view-admin-classes" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-chalkboard" style="margin-right:10px; color:var(--gold);"></i>Turmas
+                        </h3>
+                        <p class="text-sm text-muted">Gerenciamento de turmas e matrículas</p>
+                    </div>
+                    <button class="btn btn-gold" onclick="switchView('create-class')"><i class="fas fa-plus"></i> Nova Turma</button>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h3>Todas as Turmas</h3>
+                        <div class="actions"><button class="btn btn-outline btn-sm"><i class="fas fa-filter"></i> Filtrar</button></div>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Turma</th><th>Instrutor</th><th>Início</th><th>Fim</th><th>Alunos</th><th>Status</th><th style="text-align:center;">Ações</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Fundamentos da Fé</strong></td>
+                                    <td>Maria Santos</td>
+                                    <td>02/01/2026</td>
+                                    <td>30/06/2026</td>
+                                    <td>32</td>
+                                    <td><span class="status-badge active">Em andamento</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-outline btn-xs" onclick="switchView('edit-class')"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            VIEW: ADMIN CALENDAR
+            ============================================================ -->
+            <div class="view-content" id="view-admin-calendar" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-calendar-alt" style="margin-right:10px; color:var(--gold);"></i>Agenda
+                        </h3>
+                        <p class="text-sm text-muted">Calendário de aulas e eventos</p>
+                    </div>
+                    <button class="btn btn-gold" onclick="switchView('create-event')"><i class="fas fa-plus"></i> Novo Evento</button>
+                </div>
+                <div id="calendar"></div>
+            </div>
+
+            <!-- ============================================================
+            VIEW: ADMIN REPORTS
+            ============================================================ -->
+            <div class="view-content" id="view-admin-reports" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-chart-bar" style="margin-right:10px; color:var(--gold);"></i>Relatórios
+                        </h3>
+                        <p class="text-sm text-muted">Análises e métricas da escola</p>
+                    </div>
+                    <button class="btn btn-gold"><i class="fas fa-plus"></i> Gerar Relatório</button>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h3>Relatórios Disponíveis</h3>
+                        <div class="actions"><button class="btn btn-outline btn-sm"><i class="fas fa-filter"></i> Filtrar</button></div>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Nome</th><th>Tipo</th><th>Data</th><th>Status</th><th style="text-align:center;">Ações</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Progresso Geral dos Alunos</strong></td>
+                                    <td>Progresso</td>
+                                    <td>05/04/2026</td>
+                                    <td><span class="status-badge completed">Concluído</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-outline btn-xs"><i class="fas fa-download"></i></button>
+                                        <button class="btn btn-outline btn-xs"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            VIEW: ADMIN / TEACHER MONITORING
+            ============================================================ -->
+            <div class="view-content" id="view-admin-monitoring" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-people-arrows" style="margin-right:10px; color:var(--gold);"></i>Monitoria de Alunos
+                        </h3>
+                        <p class="text-sm text-muted">Acompanhe progresso semanal, transferências e revogações automáticas</p>
+                    </div>
+                </div>
+                <div class="grid-cols-3 mb-6">
+                    <div class="stat-card">
+                        <div class="stat-icon teal"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Prontos para transferir</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon rust"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Atrasados (&gt;2 semanas)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon gold"><i class="fas fa-arrows-alt-h"></i></div>
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Transferências recentes</div>
+                    </div>
+                </div>
+                <div class="filter-bar mb-4">
+                    <div class="filter-group">
+                        <label><i class="fas fa-chalkboard"></i> Turma:</label>
+                        <select>
+                            <option>Todas</option>
+                            <option>Fundamentos</option>
+                            <option>Vida Cristã</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-gold btn-sm"><i class="fas fa-search"></i> Filtrar</button>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h3>Progresso Semanal dos Alunos</h3>
+                        <div class="actions">
+                            <span class="text-xs text-muted"><i class="fas fa-info-circle"></i> Transferência permitida se todas as aulas da semana atual forem concluídas.</span>
+                        </div>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Aluno</th>
+                                    <th>Turma</th>
+                                    <th>Aulas semana</th>
+                                    <th>Concluídas</th>
+                                    <th>Última atividade</th>
+                                    <th>Status</th>
+                                    <th style="text-align:center;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Maria Oliveira</strong></td>
+                                    <td>Fundamentos</td>
+                                    <td>3</td>
+                                    <td>3</td>
+                                    <td>Hoje, 14:32</td>
+                                    <td><span class="status-badge ready">Pronto para transferir</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-success btn-xs" onclick="switchView('transfer')"><i class="fas fa-arrows-alt-h"></i> Transferir</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Carlos Souza</strong></td>
+                                    <td>Vida Cristã</td>
+                                    <td>2</td>
+                                    <td>0</td>
+                                    <td>25/03/2026</td>
+                                    <td><span class="status-badge overdue">Atrasado (&gt;2 semanas)</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-danger btn-xs" onclick="switchView('revoke')"><i class="fas fa-user-slash"></i> Revogar</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-6 grid-cols-2" style="display:grid; gap:20px;">
+                    <div class="stat-card" style="border-left:4px solid var(--teal);">
+                        <h4 style="font-weight:700; font-size:15px; color:var(--navi);"><i class="fas fa-check-circle" style="color:var(--teal);"></i> Transferência</h4>
+                        <p class="text-sm text-muted">O aluno pode ser transferido para outra turma quando concluir <strong>todas as aulas da semana atual</strong> na sua turma atual.</p>
+                    </div>
+                    <div class="stat-card" style="border-left:4px solid var(--rust);">
+                        <h4 style="font-weight:700; font-size:15px; color:var(--navi);"><i class="fas fa-exclamation-triangle" style="color:var(--rust);"></i> Revogação Automática</h4>
+                        <p class="text-sm text-muted">Se o aluno não concluir <strong>nenhuma aula em 2 semanas</strong>, a conta é automaticamente revogada (status "Inativo" / "Desistente").</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            TEACHER MONITORING (same as admin, but teacher specific)
+            ============================================================ -->
+            <div class="view-content" id="view-teacher-monitoring" style="display:none;">
+                <!-- Same content as admin-monitoring, but with teacher context -->
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-people-arrows" style="margin-right:10px; color:var(--gold);"></i>Monitoria de Alunos
+                        </h3>
+                        <p class="text-sm text-muted">Acompanhe o progresso das suas turmas</p>
+                    </div>
+                </div>
+                <div class="grid-cols-3 mb-6">
+                    <div class="stat-card"><div class="stat-icon teal"><i class="fas fa-check-circle"></i></div><div class="stat-number">5</div><div class="stat-label">Prontos para transferir</div></div>
+                    <div class="stat-card"><div class="stat-icon rust"><i class="fas fa-exclamation-triangle"></i></div><div class="stat-number">2</div><div class="stat-label">Atrasados</div></div>
+                    <div class="stat-card"><div class="stat-icon gold"><i class="fas fa-arrows-alt-h"></i></div><div class="stat-number">1</div><div class="stat-label">Transferências recentes</div></div>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h3>Alunos das suas turmas</h3>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Aluno</th><th>Turma</th><th>Aulas semana</th><th>Concluídas</th><th>Última atividade</th><th>Status</th><th style="text-align:center;">Ações</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Maria Oliveira</strong></td>
+                                    <td>Fundamentos</td>
+                                    <td>3</td>
+                                    <td>3</td>
+                                    <td>Hoje, 14:32</td>
+                                    <td><span class="status-badge ready">Pronto para transferir</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-success btn-xs" onclick="switchView('transfer')"><i class="fas fa-arrows-alt-h"></i> Transferir</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Carlos Souza</strong></td>
+                                    <td>Vida Cristã</td>
+                                    <td>2</td>
+                                    <td>0</td>
+                                    <td>25/03/2026</td>
+                                    <td><span class="status-badge overdue">Atrasado</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-danger btn-xs" onclick="switchView('revoke')"><i class="fas fa-user-slash"></i> Revogar</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            TEACHER DASHBOARD (unchanged)
+            ============================================================ -->
+            <div class="view-content" id="view-teacher-dashboard" style="display:none;">
+                <div class="grid-cols-4 mb-6">
+                    <div class="stat-card"><div class="stat-icon navi"><i class="fas fa-video"></i></div><div class="stat-number">12</div><div class="stat-label">Aulas Ministradas</div></div>
+                    <div class="stat-card"><div class="stat-icon teal"><i class="fas fa-users"></i></div><div class="stat-number">56</div><div class="stat-label">Alunos Matriculados</div></div>
+                    <div class="stat-card"><div class="stat-icon gold"><i class="fas fa-check-circle"></i></div><div class="stat-number">8</div><div class="stat-label">Testes Aplicados</div></div>
+                    <div class="stat-card"><div class="stat-icon rust"><i class="fas fa-star"></i></div><div class="stat-number">4.8</div><div class="stat-label">Avaliação Média</div></div>
+                </div>
+                <div class="grid-cols-2 mb-6">
+                    <div class="stat-card" style="padding:20px 24px;">
+                        <div class="flex-between mb-4"><h3 style="font-size:15px; font-weight:700;">Próximas Aulas</h3><span class="text-xs text-muted">Esta semana</span></div>
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            <div style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--cream); border-radius:var(--radius); border-left:3px solid var(--gold);">
+                                <div style="width:36px; height:36px; border-radius:8px; background:rgba(212,167,71,0.12); color:var(--gold-dark); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;">A5</div>
+                                <div style="flex:1;"><div style="font-weight:600; font-size:14px;">Oração e Intercessão</div><div style="font-size:12px; color:rgba(26,42,74,0.5);">Turma A · 10/04/2026 19:00</div></div>
+                                <span class="status-badge active">Hoje</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="padding:20px 24px;">
+                        <div class="flex-between mb-4"><h3 style="font-size:15px; font-weight:700;">Resumo de Testes</h3><span class="text-xs text-muted">Últimos 7 dias</span></div>
+                        <div class="chart-container chart-container-sm"><canvas id="chartTestSummary"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            TEACHER LESSONS (list)
+            ============================================================ -->
+            <div class="view-content" id="view-teacher-lessons" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-video" style="margin-right:10px; color:var(--gold);"></i>Aulas
+                        </h3>
+                        <p class="text-sm text-muted">Gerencie o conteúdo das suas turmas</p>
+                    </div>
+                    <button class="btn btn-gold" onclick="switchView('create-lesson')"><i class="fas fa-plus"></i> Nova Aula</button>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h3>Todas as Aulas</h3>
+                        <div class="actions"><button class="btn btn-outline btn-sm"><i class="fas fa-filter"></i> Turma</button></div>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>#</th><th>Título</th><th>Turma</th><th>Disponível</th><th>Duração</th><th>Teste</th><th style="text-align:center;">Ações</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><strong>Introdução à Fé</strong></td>
+                                    <td>Fundamentos</td>
+                                    <td><span class="status-badge active">Disponível</span></td>
+                                    <td>45 min</td>
+                                    <td><span class="status-badge completed">Anexado</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-outline btn-xs" onclick="switchView('edit-lesson')"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            TEACHER TESTS (list)
+            ============================================================ -->
+            <div class="view-content" id="view-teacher-tests" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-check-circle" style="margin-right:10px; color:var(--gold);"></i>Testes
+                        </h3>
+                        <p class="text-sm text-muted">Acompanhe os resultados dos testes</p>
+                    </div>
+                    <button class="btn btn-gold" onclick="switchView('create-test')"><i class="fas fa-plus"></i> Novo Teste</button>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h3>Testes Aplicados</h3>
+                        <div class="actions"><button class="btn btn-outline btn-sm"><i class="fas fa-filter"></i> Filtrar</button></div>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Teste</th><th>Aula</th><th>Nota Mínima</th><th>Alunos</th><th>Média</th><th>Aprovação</th><th style="text-align:center;">Ações</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Teste Módulo 1</strong></td>
+                                    <td>Introdução à Fé</td>
+                                    <td>70%</td>
+                                    <td>32</td>
+                                    <td>78%</td>
+                                    <td><span class="status-badge active">85%</span></td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-outline btn-xs" onclick="switchView('edit-test')"><i class="fas fa-edit"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            TEACHER PROGRESS (list)
+            ============================================================ -->
+            <div class="view-content" id="view-teacher-progress" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-chart-line" style="margin-right:10px; color:var(--gold);"></i>Progresso dos Alunos
+                        </h3>
+                        <p class="text-sm text-muted">Acompanhamento individual</p>
+                    </div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <select class="form-control" style="width:auto; padding:8px 16px; border-radius:8px;">
+                            <option>Todas as turmas</option>
+                            <option>Fundamentos</option>
+                            <option>Vida Cristã</option>
+                        </select>
+                        <button class="btn btn-gold btn-sm"><i class="fas fa-search"></i> Buscar</button>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h3>Alunos</h3>
+                        <div class="actions"><button class="btn btn-outline btn-sm"><i class="fas fa-file-export"></i> Exportar</button></div>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Aluno</th><th>Célula</th><th>Turma</th><th>Aulas Assistidas</th><th>Testes Aprovados</th><th>Progresso</th><th>Status</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Maria Oliveira</strong></td>
+                                    <td>Fé &amp; Vida</td>
+                                    <td>Fundamentos</td>
+                                    <td>6 / 10</td>
+                                    <td>3 / 4</td>
+                                    <td>
+                                        <div style="display:flex; align-items:center; gap:8px;">
+                                            <div style="flex:1; height:6px; background:rgba(26,42,74,0.06); border-radius:4px; overflow:hidden; min-width:60px;">
+                                                <div style="width:60%; height:100%; background:var(--gold); border-radius:4px;"></div>
+                                            </div>
+                                            <span style="font-size:12px; font-weight:600;">60%</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="status-badge active">Em progresso</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            FORM VIEWS (Create / Edit)
+            ============================================================ -->
+
+            <!-- CREATE USER -->
+            <div class="view-content" id="view-create-user" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-user-plus" style="margin-right:10px; color:var(--gold);"></i>Novo Utilizador
+                        </h3>
+                        <p class="text-sm text-muted">Preencha os dados para criar uma nova conta</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-users')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nome completo *</label>
+                                <input type="text" class="form-control" placeholder="Ex: João Silva" value="Ana Souza" />
+                            </div>
+                            <div class="form-group">
+                                <label>Data de nascimento *</label>
+                                <input type="date" class="form-control" value="1995-03-15" />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <input type="email" class="form-control" placeholder="email@exemplo.com" value="ana.souza@email.com" />
+                            </div>
+                            <div class="form-group">
+                                <label>Telefone *</label>
+                                <input type="text" class="form-control" placeholder="(11) 98765-4321" value="(11) 98765-4321" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Morada</label>
+                            <input type="text" class="form-control" placeholder="Rua, número, bairro" value="Rua das Flores, 123" />
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Função *</label>
+                                <select class="form-control">
+                                    <option>Aluno</option>
+                                    <option>Instrutor</option>
+                                    <option>Administrador</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Célula</label>
+                                <select class="form-control">
+                                    <option>Selecione...</option>
+                                    <option selected>Fé &amp; Vida</option>
+                                    <option>Luz do Mundo</option>
+                                    <option>Nova Aliança</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Password *</label>
+                                <input type="password" class="form-control" placeholder="••••••••" value="password123" />
+                            </div>
+                            <div class="form-group">
+                                <label>Confirmar password *</label>
+                                <input type="password" class="form-control" placeholder="••••••••" value="password123" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Líder da Célula (confirmação)</label>
+                            <input type="text" class="form-control" placeholder="Nome do líder" value="Pastor André" />
+                        </div>
+                        <div class="flex-between mt-4">
+                            <span class="text-xs text-muted"><i class="fas fa-info-circle"></i> O líder da célula será notificado para confirmar a pertença.</span>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('admin-users')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('admin-users'); alert('✅ Utilizador criado! Um email de confirmação foi enviado.')">
+                                    <i class="fas fa-save"></i> Salvar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- EDIT USER -->
+            <div class="view-content" id="view-edit-user" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-user-edit" style="margin-right:10px; color:var(--gold);"></i>Editar Utilizador
+                        </h3>
+                        <p class="text-sm text-muted">Edite os dados do utilizador <strong>João da Silva</strong></p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-users')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <!-- same fields as create, pre-filled -->
+                        <div class="form-row">
+                            <div class="form-group"><label>Nome completo *</label><input type="text" class="form-control" value="João da Silva" /></div>
+                            <div class="form-group"><label>Data de nascimento *</label><input type="date" class="form-control" value="1985-06-10" /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Email *</label><input type="email" class="form-control" value="joao@igreja.org" /></div>
+                            <div class="form-group"><label>Telefone *</label><input type="text" class="form-control" value="(11) 98765-4321" /></div>
+                        </div>
+                        <div class="form-group"><label>Morada</label><input type="text" class="form-control" value="Av. Principal, 100" /></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Função *</label><select class="form-control"><option selected>Administrador</option><option>Instrutor</option><option>Aluno</option></select></div>
+                            <div class="form-group"><label>Célula</label><select class="form-control"><option>Selecione...</option><option>Fé &amp; Vida</option></select></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Password (deixe em branco para manter)</label><input type="password" class="form-control" placeholder="Nova password" /></div>
+                            <div class="form-group"><label>Confirmar password</label><input type="password" class="form-control" placeholder="Confirmar nova password" /></div>
+                        </div>
+                        <div class="flex-between mt-4">
+                            <span class="text-xs text-muted"><i class="fas fa-info-circle"></i> Altere apenas os campos necessários.</span>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('admin-users')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('admin-users'); alert('✅ Utilizador atualizado com sucesso!')">
+                                    <i class="fas fa-save"></i> Atualizar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- CREATE CELL -->
+            <div class="view-content" id="view-create-cell" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-layer-group" style="margin-right:10px; color:var(--gold);"></i>Nova Célula
+                        </h3>
+                        <p class="text-sm text-muted">Crie uma nova célula</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-cells')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <div class="form-group"><label>Nome da Célula *</label><input type="text" class="form-control" placeholder="Ex: Fé &amp; Vida" value="Esperança Viva" /></div>
+                        <div class="form-group"><label>Nome do Líder *</label><input type="text" class="form-control" placeholder="Ex: Pastor André" value="Líder Camila" /></div>
+                        <div class="form-group"><label>Descrição</label><textarea class="form-control" placeholder="Breve descrição da célula..." rows="2"></textarea></div>
+                        <div class="flex-between mt-4">
+                            <div></div>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('admin-cells')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('admin-cells'); alert('✅ Célula criada com sucesso!')">
+                                    <i class="fas fa-save"></i> Salvar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- EDIT CELL -->
+            <div class="view-content" id="view-edit-cell" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-edit" style="margin-right:10px; color:var(--gold);"></i>Editar Célula
+                        </h3>
+                        <p class="text-sm text-muted">Editar <strong>Fé &amp; Vida</strong></p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-cells')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <div class="form-group"><label>Nome da Célula *</label><input type="text" class="form-control" value="Fé &amp; Vida" /></div>
+                        <div class="form-group"><label>Nome do Líder *</label><input type="text" class="form-control" value="Pastor André" /></div>
+                        <div class="form-group"><label>Descrição</label><textarea class="form-control" rows="2">Célula focada no discipulado</textarea></div>
+                        <div class="flex-between mt-4">
+                            <div></div>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('admin-cells')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('admin-cells'); alert('✅ Célula atualizada!')">
+                                    <i class="fas fa-save"></i> Atualizar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- CREATE CLASS -->
+            <div class="view-content" id="view-create-class" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-chalkboard" style="margin-right:10px; color:var(--gold);"></i>Nova Turma
+                        </h3>
+                        <p class="text-sm text-muted">Crie uma nova turma</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-classes')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <div class="form-group"><label>Nome da Turma *</label><input type="text" class="form-control" placeholder="Ex: Fundamentos da Fé" value="Evangelismo" /></div>
+                        <div class="form-group"><label>Instrutor *</label><select class="form-control"><option>Maria Santos</option><option>Roberto Dias</option><option selected>Carlos Mendes</option></select></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Data de Início *</label><input type="date" class="form-control" value="2026-04-01" /></div>
+                            <div class="form-group"><label>Data de Fim *</label><input type="date" class="form-control" value="2026-10-01" /></div>
+                        </div>
+                        <div class="form-group"><label>Alunos (selecionar múltiplos)</label><select class="form-control" multiple style="height:80px;"><option>Ana Souza</option><option>Carlos Oliveira</option><option>Maria Silva</option></select></div>
+                        <div class="flex-between mt-4">
+                            <div></div>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('admin-classes')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('admin-classes'); alert('✅ Turma criada!')">
+                                    <i class="fas fa-save"></i> Salvar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- EDIT CLASS -->
+            <div class="view-content" id="view-edit-class" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-edit" style="margin-right:10px; color:var(--gold);"></i>Editar Turma
+                        </h3>
+                        <p class="text-sm text-muted">Editar <strong>Fundamentos da Fé</strong></p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-classes')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <div class="form-group"><label>Nome da Turma *</label><input type="text" class="form-control" value="Fundamentos da Fé" /></div>
+                        <div class="form-group"><label>Instrutor *</label><select class="form-control"><option selected>Maria Santos</option><option>Roberto Dias</option></select></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Data de Início *</label><input type="date" class="form-control" value="2026-01-02" /></div>
+                            <div class="form-group"><label>Data de Fim *</label><input type="date" class="form-control" value="2026-06-30" /></div>
+                        </div>
+                        <div class="form-group"><label>Alunos</label><select class="form-control" multiple style="height:80px;"><option selected>Ana Souza</option><option selected>Carlos Oliveira</option><option>Maria Silva</option></select></div>
+                        <div class="flex-between mt-4">
+                            <div></div>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('admin-classes')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('admin-classes'); alert('✅ Turma atualizada!')">
+                                    <i class="fas fa-save"></i> Atualizar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- CREATE LESSON -->
+            <div class="view-content" id="view-create-lesson" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-video" style="margin-right:10px; color:var(--gold);"></i>Nova Aula
+                        </h3>
+                        <p class="text-sm text-muted">Crie uma nova aula</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('teacher-lessons')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <div class="form-group"><label>Título *</label><input type="text" class="form-control" placeholder="Ex: Introdução à Fé" value="Evangelismo na Prática" /></div>
+                        <div class="form-group"><label>Turma *</label><select class="form-control"><option>Fundamentos da Fé</option><option>Vida Cristã</option><option selected>Evangelismo</option></select></div>
+                        <div class="form-group"><label>Descrição</label><textarea class="form-control" rows="2"></textarea></div>
+                        <div class="form-group"><label>URL do Vídeo *</label><input type="text" class="form-control" placeholder="https://youtube.com/..." value="https://vimeo.com/123456" /></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Disponível a partir *</label><input type="datetime-local" class="form-control" value="2026-04-15T19:00" /></div>
+                            <div class="form-group"><label>Duração (min) *</label><input type="number" class="form-control" value="50" /></div>
+                        </div>
+                        <div class="form-group"><label>Ordem de sequência *</label><input type="number" class="form-control" value="5" /></div>
+                        <div class="form-group"><label>Material de apoio (URL)</label><input type="text" class="form-control" placeholder="https://drive.google.com/..." /></div>
+                        <div class="flex-between mt-4">
+                            <div></div>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('teacher-lessons')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('teacher-lessons'); alert('✅ Aula criada!')">
+                                    <i class="fas fa-save"></i> Salvar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- EDIT LESSON -->
+            <div class="view-content" id="view-edit-lesson" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-edit" style="margin-right:10px; color:var(--gold);"></i>Editar Aula
+                        </h3>
+                        <p class="text-sm text-muted">Editar <strong>Introdução à Fé</strong></p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('teacher-lessons')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <div class="form-group"><label>Título *</label><input type="text" class="form-control" value="Introdução à Fé" /></div>
+                        <div class="form-group"><label>Turma *</label><select class="form-control"><option selected>Fundamentos da Fé</option><option>Vida Cristã</option></select></div>
+                        <div class="form-group"><label>Descrição</label><textarea class="form-control" rows="2">Aula introdutória sobre fé</textarea></div>
+                        <div class="form-group"><label>URL do Vídeo *</label><input type="text" class="form-control" value="https://youtube.com/abc123" /></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Disponível a partir *</label><input type="datetime-local" class="form-control" value="2026-01-02T19:00" /></div>
+                            <div class="form-group"><label>Duração (min) *</label><input type="number" class="form-control" value="45" /></div>
+                        </div>
+                        <div class="form-group"><label>Ordem de sequência *</label><input type="number" class="form-control" value="1" /></div>
+                        <div class="form-group"><label>Material de apoio</label><input type="text" class="form-control" value="https://drive.google.com/file123" /></div>
+                        <div class="flex-between mt-4">
+                            <div></div>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('teacher-lessons')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('teacher-lessons'); alert('✅ Aula atualizada!')">
+                                    <i class="fas fa-save"></i> Atualizar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- CREATE TEST -->
+            <div class="view-content" id="view-create-test" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-check-circle" style="margin-right:10px; color:var(--gold);"></i>Novo Teste
+                        </h3>
+                        <p class="text-sm text-muted">Crie um novo teste</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('teacher-tests')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <div class="form-group"><label>Título *</label><input type="text" class="form-control" placeholder="Ex: Teste Módulo 1" value="Teste Módulo 3" /></div>
+                        <div class="form-group"><label>Aula associada *</label><select class="form-control"><option>Introdução à Fé</option><option>A Bíblia como Autoridade</option><option selected>Oração e Comunhão</option></select></div>
+                        <div class="form-group"><label>Nota mínima de aprovação (%) *</label><input type="number" class="form-control" value="65" /></div>
+                        <div class="flex-between mt-4">
+                            <span class="text-xs text-muted"><i class="fas fa-info-circle"></i> As perguntas serão adicionadas após a criação.</span>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('teacher-tests')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('teacher-tests'); alert('✅ Teste criado!')">
+                                    <i class="fas fa-save"></i> Salvar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- EDIT TEST -->
+            <div class="view-content" id="view-edit-test" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-edit" style="margin-right:10px; color:var(--gold);"></i>Editar Teste
+                        </h3>
+                        <p class="text-sm text-muted">Editar <strong>Teste Módulo 1</strong></p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('teacher-tests')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <div class="form-group"><label>Título *</label><input type="text" class="form-control" value="Teste Módulo 1" /></div>
+                        <div class="form-group"><label>Aula associada *</label><select class="form-control"><option selected>Introdução à Fé</option><option>A Bíblia como Autoridade</option></select></div>
+                        <div class="form-group"><label>Nota mínima de aprovação (%) *</label><input type="number" class="form-control" value="70" /></div>
+                        <div class="flex-between mt-4">
+                            <div></div>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('teacher-tests')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('teacher-tests'); alert('✅ Teste atualizado!')">
+                                    <i class="fas fa-save"></i> Atualizar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- CREATE EVENT -->
+            <div class="view-content" id="view-create-event" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-calendar-plus" style="margin-right:10px; color:var(--gold);"></i>Novo Evento
+                        </h3>
+                        <p class="text-sm text-muted">Adicione um novo evento ao calendário</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-calendar')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <div class="form-group"><label>Título *</label><input type="text" class="form-control" placeholder="Ex: Aula: Fundamentos" value="Aula: Evangelismo" /></div>
+                        <div class="form-group"><label>Tipo</label><select class="form-control"><option>Aula</option><option>Teste</option><option>Reunião</option></select></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Data e Hora de Início *</label><input type="datetime-local" class="form-control" value="2026-04-20T19:00" /></div>
+                            <div class="form-group"><label>Data e Hora de Fim *</label><input type="datetime-local" class="form-control" value="2026-04-20T20:30" /></div>
+                        </div>
+                        <div class="form-group"><label>Turma</label><select class="form-control"><option>Fundamentos da Fé</option><option>Vida Cristã</option><option selected>Evangelismo</option></select></div>
+                        <div class="flex-between mt-4">
+                            <div></div>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('admin-calendar')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('admin-calendar'); alert('✅ Evento criado!')">
+                                    <i class="fas fa-save"></i> Salvar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- EDIT EVENT (simplified) -->
+            <div class="view-content" id="view-edit-event" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-edit" style="margin-right:10px; color:var(--gold);"></i>Editar Evento
+                        </h3>
+                        <p class="text-sm text-muted">Editar evento</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-calendar')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <form>
+                        <div class="form-group"><label>Título *</label><input type="text" class="form-control" value="Aula: Fundamentos" /></div>
+                        <div class="form-group"><label>Tipo</label><select class="form-control"><option selected>Aula</option><option>Teste</option></select></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Início *</label><input type="datetime-local" class="form-control" value="2026-04-10T19:00" /></div>
+                            <div class="form-group"><label>Fim *</label><input type="datetime-local" class="form-control" value="2026-04-10T20:30" /></div>
+                        </div>
+                        <div class="form-group"><label>Turma</label><select class="form-control"><option selected>Fundamentos da Fé</option><option>Vida Cristã</option></select></div>
+                        <div class="flex-between mt-4">
+                            <div></div>
+                            <div>
+                                <button type="button" class="btn btn-outline" onclick="switchView('admin-calendar')">Cancelar</button>
+                                <button type="button" class="btn btn-gold" onclick="switchView('admin-calendar'); alert('✅ Evento atualizado!')">
+                                    <i class="fas fa-save"></i> Atualizar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            APPROVAL ACTION VIEWS (Leader Confirm, Admin Approve, Reject)
+            ============================================================ -->
+
+            <!-- LEADER CONFIRM -->
+            <div class="view-content" id="view-leader-confirm" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-user-tie" style="margin-right:10px; color:var(--gold);"></i>Confirmar como Líder
+                        </h3>
+                        <p class="text-sm text-muted">Confirme que o utilizador pertence à célula</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-approvals')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <p style="margin-bottom:16px;">Confirme que o utilizador <strong>Ana Souza</strong> pertence à célula <strong>Fé &amp; Vida</strong>.</p>
+                    <div class="form-group"><label>Nome do Líder *</label><input type="text" class="form-control" value="Pastor André" /></div>
+                    <div class="form-group"><label>Token de confirmação</label><input type="text" class="form-control" value="LK-7F3A-2B9D" readonly style="background:var(--cream);" /></div>
+                    <div style="padding:12px 16px; background:rgba(212,167,71,0.06); border-radius:var(--radius); border-left:3px solid var(--gold); margin-bottom:20px;">
+                        <span class="text-sm">Ao confirmar, o líder atesta que este aluno pertence à célula indicada. O administrador será notificado para aprovação final.</span>
+                    </div>
+                    <div class="flex-between">
+                        <div></div>
+                        <div>
+                            <button type="button" class="btn btn-outline" onclick="switchView('admin-approvals')">Cancelar</button>
+                            <button type="button" class="btn btn-teal" onclick="switchView('admin-approvals'); alert('✅ Líder confirmou! Aguardando aprovação do administrador.')">
+                                <i class="fas fa-check"></i> Confirmar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN APPROVE -->
+            <div class="view-content" id="view-admin-approve" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-user-shield" style="margin-right:10px; color:var(--teal);"></i>Aprovar Conta
+                        </h3>
+                        <p class="text-sm text-muted">Aprove a conta do utilizador</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-approvals')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <p style="margin-bottom:16px;">Aprovar a conta de <strong>Mariana Silva</strong> da célula <strong>Nova Aliança</strong>.</p>
+                    <div style="padding:12px 16px; background:rgba(45,155,142,0.06); border-radius:var(--radius); border-left:3px solid var(--teal); margin-bottom:16px;">
+                        <div class="flex-between">
+                            <span class="text-sm"><i class="fas fa-check-circle" style="color:var(--teal);"></i> Líder confirmou</span>
+                            <span class="status-badge confirmed">Confirmado</span>
+                        </div>
+                        <div class="text-xs text-muted mt-1">Líder: Diogo Santos · Confirmado em 09/04/2026</div>
+                    </div>
+                    <div class="form-group"><label>Nota (opcional)</label><textarea class="form-control" placeholder="Observações sobre esta aprovação..." rows="2"></textarea></div>
+                    <div style="padding:12px 16px; background:rgba(184,92,56,0.04); border-radius:var(--radius); border-left:3px solid var(--rust); margin-bottom:20px;">
+                        <span class="text-sm text-muted">Ao aprovar, a conta será ativada e o utilizador poderá fazer login.</span>
+                    </div>
+                    <div class="flex-between">
+                        <div></div>
+                        <div>
+                            <button type="button" class="btn btn-outline" onclick="switchView('admin-approvals')">Cancelar</button>
+                            <button type="button" class="btn btn-danger" onclick="switchView('admin-approvals'); alert('❌ Conta rejeitada.')">
+                                <i class="fas fa-times"></i> Rejeitar
+                            </button>
+                            <button type="button" class="btn btn-success" onclick="switchView('admin-approvals'); alert('✅ Conta aprovada! O utilizador já pode fazer login.')">
+                                <i class="fas fa-check"></i> Aprovar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REJECT -->
+            <div class="view-content" id="view-reject" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-times-circle" style="margin-right:10px; color:var(--rust);"></i>Rejeitar Conta
+                        </h3>
+                        <p class="text-sm text-muted">Rejeite a conta do utilizador</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-approvals')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <p style="margin-bottom:16px;">Tem certeza que deseja rejeitar a conta de <strong>Mariana Silva</strong>?</p>
+                    <div class="form-group"><label>Motivo da rejeição *</label><textarea class="form-control" placeholder="Informe o motivo..." rows="2"></textarea></div>
+                    <div style="padding:12px 16px; background:rgba(184,92,56,0.04); border-radius:var(--radius); border-left:3px solid var(--rust); margin-bottom:20px;">
+                        <span class="text-sm text-muted">Esta ação é irreversível. O utilizador poderá tentar novamente.</span>
+                    </div>
+                    <div class="flex-between">
+                        <div></div>
+                        <div>
+                            <button type="button" class="btn btn-outline" onclick="switchView('admin-approvals')">Cancelar</button>
+                            <button type="button" class="btn btn-danger" onclick="switchView('admin-approvals'); alert('❌ Conta rejeitada.')">
+                                <i class="fas fa-times"></i> Rejeitar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRANSFER -->
+            <div class="view-content" id="view-transfer" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-arrows-alt-h" style="margin-right:10px; color:var(--teal);"></i>Transferir Aluno
+                        </h3>
+                        <p class="text-sm text-muted">Transfira o aluno para outra turma</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-monitoring')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <p style="margin-bottom:16px;">Transferir <strong>Maria Oliveira</strong> da turma <strong>Fundamentos</strong> para:</p>
+                    <div class="form-group"><label>Turma de destino *</label><select class="form-control"><option>Vida Cristã</option><option>Discipulado</option><option>Evangelismo</option></select></div>
+                    <div class="form-group"><label>Motivo (opcional)</label><textarea class="form-control" placeholder="Ex: Concluiu todas as aulas da semana atual..." rows="2"></textarea></div>
+                    <div style="padding:12px 16px; background:rgba(45,155,142,0.06); border-radius:var(--radius); border-left:3px solid var(--teal); margin-bottom:20px;">
+                        <span class="text-sm text-muted">A transferência manterá o histórico de progresso do aluno. Ele será inscrito na nova turma.</span>
+                    </div>
+                    <div class="flex-between">
+                        <div></div>
+                        <div>
+                            <button type="button" class="btn btn-outline" onclick="switchView('admin-monitoring')">Cancelar</button>
+                            <button type="button" class="btn btn-teal" onclick="switchView('admin-monitoring'); alert('✅ Aluno transferido com sucesso!')">
+                                <i class="fas fa-check"></i> Transferir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REVOKE -->
+            <div class="view-content" id="view-revoke" style="display:none;">
+                <div class="flex-between mb-4">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--navi);">
+                            <i class="fas fa-user-slash" style="margin-right:10px; color:var(--rust);"></i>Revogar Acesso
+                        </h3>
+                        <p class="text-sm text-muted">Revogue o acesso do aluno</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="switchView('admin-monitoring')"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div class="stat-card" style="padding:28px;">
+                    <p style="margin-bottom:16px;">Tem certeza que deseja revogar o acesso de <strong>Carlos Souza</strong>?</p>
+                    <p class="text-sm text-muted" style="margin-bottom:16px;">Motivo: O aluno não concluiu nenhuma aula nas últimas 2 semanas.</p>
+                    <div class="form-group"><label>Motivo da revogação *</label><textarea class="form-control" placeholder="Ex: Inatividade prolongada..." rows="2"></textarea></div>
+                    <div style="padding:12px 16px; background:rgba(184,92,56,0.04); border-radius:var(--radius); border-left:3px solid var(--rust); margin-bottom:20px;">
+                        <span class="text-sm text-muted">Esta ação é irreversível. O aluno perderá o acesso à plataforma e seu status será alterado para "Inativo".</span>
+                    </div>
+                    <div class="flex-between">
+                        <div></div>
+                        <div>
+                            <button type="button" class="btn btn-outline" onclick="switchView('admin-monitoring')">Cancelar</button>
+                            <button type="button" class="btn btn-danger" onclick="switchView('admin-monitoring'); alert('❌ Acesso revogado.')">
+                                <i class="fas fa-times"></i> Revogar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /page-content -->
+    </main>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ---- Sidebar ----
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const hamburger = document.getElementById('hamburgerBtn');
+            const navItems = document.querySelectorAll('.nav-item');
+            const pageTitle = document.getElementById('pageTitle');
+            const pageSubtitle = document.getElementById('pageSubtitle');
+            const views = document.querySelectorAll('.view-content');
+
+            const meta = {
+                'admin-dashboard': { title: 'Dashboard', subtitle: 'Visão geral da plataforma' },
+                'admin-approvals': { title: 'Aprovações', subtitle: 'Fluxo de aprovação de contas' },
+                'admin-users': { title: 'Utilizadores', subtitle: 'Gestão de alunos, instrutores e administradores' },
+                'admin-cells': { title: 'Células', subtitle: 'Organização das células da igreja' },
+                'admin-classes': { title: 'Turmas', subtitle: 'Gerenciamento de turmas e matrículas' },
+                'admin-calendar': { title: 'Agenda', subtitle: 'Calendário de aulas e eventos' },
+                'admin-reports': { title: 'Relatórios', subtitle: 'Análises e métricas da escola' },
+                'admin-monitoring': { title: 'Monitoria', subtitle: 'Transferências e revogações automáticas' },
+                'teacher-dashboard': { title: 'Painel Instrutor', subtitle: 'Visão geral do seu trabalho' },
+                'teacher-lessons': { title: 'Aulas', subtitle: 'Crie e gerencie suas aulas' },
+                'teacher-tests': { title: 'Testes', subtitle: 'Acompanhe os testes e resultados' },
+                'teacher-progress': { title: 'Progresso dos Alunos', subtitle: 'Acompanhamento individual' },
+                'teacher-monitoring': { title: 'Monitoria', subtitle: 'Transferências e revogações' },
+                // form views
+                'create-user': { title: 'Novo Utilizador', subtitle: 'Criar nova conta' },
+                'edit-user': { title: 'Editar Utilizador', subtitle: 'Editar dados' },
+                'create-cell': { title: 'Nova Célula', subtitle: 'Criar célula' },
+                'edit-cell': { title: 'Editar Célula', subtitle: 'Editar célula' },
+                'create-class': { title: 'Nova Turma', subtitle: 'Criar turma' },
+                'edit-class': { title: 'Editar Turma', subtitle: 'Editar turma' },
+                'create-lesson': { title: 'Nova Aula', subtitle: 'Criar aula' },
+                'edit-lesson': { title: 'Editar Aula', subtitle: 'Editar aula' },
+                'create-test': { title: 'Novo Teste', subtitle: 'Criar teste' },
+                'edit-test': { title: 'Editar Teste', subtitle: 'Editar teste' },
+                'create-event': { title: 'Novo Evento', subtitle: 'Criar evento' },
+                'edit-event': { title: 'Editar Evento', subtitle: 'Editar evento' },
+                'leader-confirm': { title: 'Confirmar Líder', subtitle: 'Confirmação de célula' },
+                'admin-approve': { title: 'Aprovar Conta', subtitle: 'Aprovação final' },
+                'reject': { title: 'Rejeitar Conta', subtitle: 'Rejeição' },
+                'transfer': { title: 'Transferir Aluno', subtitle: 'Mudança de turma' },
+                'revoke': { title: 'Revogar Acesso', subtitle: 'Remover acesso' },
+            };
+
+            function switchView(viewId) {
+                views.forEach(v => v.style.display = 'none');
+                const target = document.getElementById('view-' + viewId);
+                if (target) target.style.display = 'block';
+                navItems.forEach(item => {
+                    item.classList.toggle('active', item.dataset.view === viewId);
+                });
+                const info = meta[viewId];
+                if (info) {
+                    pageTitle.textContent = info.title;
+                    pageSubtitle.textContent = info.subtitle;
+                }
+                closeSidebar();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (viewId === 'admin-dashboard' || viewId === 'teacher-dashboard') {
+                    setTimeout(renderCharts, 300);
+                }
+                if (viewId === 'admin-calendar') setTimeout(initCalendar, 300);
+            }
+
+            function openSidebar() {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeSidebar() {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const view = this.dataset.view;
+                    if (view) switchView(view);
+                });
+            });
+
+            hamburger.addEventListener('click', () => {
+                sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+            });
+            overlay.addEventListener('click', closeSidebar);
+            document.addEventListener('keydown', e => { if (e.key === 'Escape' && sidebar.classList.contains('open'))
+                    closeSidebar(); });
+            window.addEventListener('resize', () => { if (window.innerWidth > 768 && sidebar.classList.contains('open'))
+                    closeSidebar(); });
+
+            // ---- Charts ----
+            let chartProgress, chartDistribution, chartTestSummary;
+
+            function renderCharts() {
+                const ctx1 = document.getElementById('chartProgressByCell');
+                if (ctx1) {
+                    if (chartProgress) chartProgress.destroy();
+                    chartProgress = new Chart(ctx1, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Fé & Vida', 'Luz do Mundo', 'Nova Aliança', 'Esperança Viva'],
+                            datasets: [{ label: 'Alunos Ativos', data: [28, 22, 18, 15],
+                                backgroundColor: ['#d4a747', '#2d9b8e', '#b85c38', '#1a2a4a'], borderRadius: 6 }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true, grid: { color: 'rgba(26,42,74,0.04)' } },
+                            x: { grid: { display: false } } } }
+                    });
+                }
+                const ctx2 = document.getElementById('chartStudentDistribution');
+                if (ctx2) {
+                    if (chartDistribution) chartDistribution.destroy();
+                    chartDistribution = new Chart(ctx2, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Em progresso', 'Concluído', 'Desistente'],
+                            datasets: [{ data: [98, 34, 12], backgroundColor: ['#d4a747', '#2d9b8e', '#b85c38'],
+                                borderWidth: 0 }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom',
+                                    labels: { boxWidth: 12, font: { size: 11 } } } }, cutout: '70%' }
+                    });
+                }
+                const ctx3 = document.getElementById('chartTestSummary');
+                if (ctx3) {
+                    if (chartTestSummary) chartTestSummary.destroy();
+                    chartTestSummary = new Chart(ctx3, {
+                        type: 'line',
+                        data: {
+                            labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                            datasets: [{ label: 'Testes realizados', data: [4, 7, 3, 9, 6, 5, 2], borderColor: '#d4a747',
+                                backgroundColor: 'rgba(212,167,71,0.06)', fill: true, tension: 0.4,
+                                pointBackgroundColor: '#d4a747', pointRadius: 3 }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true, grid: { color: 'rgba(26,42,74,0.04)' } },
+                            x: { grid: { display: false } } } }
+                    });
+                }
+            }
+
+            // ---- FullCalendar ----
+            let calendar = null;
+
+            function initCalendar() {
+                const el = document.getElementById('calendar');
+                if (!el) return;
+                if (calendar) { calendar.destroy();
+                    calendar = null; }
+                calendar = new FullCalendar.Calendar(el, {
+                    locale: 'pt-br',
+                    initialView: 'dayGridMonth',
+                    headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,listWeek' },
+                    buttonText: { today: 'Hoje', month: 'Mês', week: 'Semana', list: 'Lista' },
+                    events: [
+                        { title: 'Aula: Fundamentos', start: '2026-04-10T19:00:00', end: '2026-04-10T20:30:00',
+                            className: 'fc-event-gold' },
+                        { title: 'Aula: Vida Cristã', start: '2026-04-12T19:00:00', end: '2026-04-12T20:30:00',
+                            className: 'fc-event-teal' },
+                    ],
+                    eventClick: function(info) { alert('📅 ' + info.event.title); },
+                    height: 'auto',
+                });
+                calendar.render();
+            }
+
+            // ---- Init ----
+            switchView('admin-dashboard');
+            setTimeout(renderCharts, 400);
+
+            window.switchView = switchView;
+            window.initCalendar = initCalendar;
+
+        })();
+    </script>
+
+</body>
+</html>
